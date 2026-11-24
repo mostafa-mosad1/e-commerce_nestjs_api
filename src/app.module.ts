@@ -1,8 +1,10 @@
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ProductModule } from './product/product.module.js';
+import { Product } from './product/entities/product.entity.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -17,6 +19,18 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       serviceId: 'e-commerce_nestjs_api',
     }),
     ProductModule,
+     TypeOrmModule.forRoot({
+       type: 'postgres',
+       host: 'localhost',
+       port: 5432,
+       username: 'postgres',
+       password: '123456',
+       database: 'e-commerce_nestjs_api',
+      //  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+       entities: [Product],
+       autoLoadEntities: true,
+       synchronize: true,
+     })
   ],
   controllers: [AppController],
   providers: [AppService],
