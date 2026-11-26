@@ -24,7 +24,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
        host: 'localhost',
        port: 5432,
        username: 'postgres',
-       password: '123456',
+       password: '123',
        database: 'e-commerce_nestjs_api',
       //  entities: [__dirname + '/**/*.entity{.ts,.js}'],
        entities: [Product],
