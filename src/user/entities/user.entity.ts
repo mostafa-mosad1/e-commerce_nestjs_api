@@ -9,8 +9,8 @@ import { Review } from "../../review/entities/review.entity.js";
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
-    @Column()
-    name: string;
+    @Column({ type: 'varchar', nullable: true })
+    name?: string | null;
     @Column()
     username: string;
     @Column({unique: true , nullable: false})

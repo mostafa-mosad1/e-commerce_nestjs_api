@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity.js';
 import { Repository } from 'typeorm';
+import { RegisterUserDto } from './dto/register.dto.js';
+import { ExceptionHandler } from '@nestjs/core/errors/exception-handler.js';
 
 @Injectable()
 export class UserService {
@@ -11,19 +13,35 @@ export class UserService {
 
   constructor(
     @InjectRepository(User)
-     private userRepository: Repository<User>
+     private userDB: Repository<User>
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+ async createNewUser(registerUserData: RegisterUserDto) {
+    if (!registerUserData) {
+      throw new BadRequestException('Request body is required');
+    }
+
+    const { name, email, password, username } = registerUserData;
+   const validNewUser = await this.userDB.findOne({where :{email}})
+    if(validNewUser) throw new BadRequestException("email is already in use")
+      const salt = bcrypt.genSaltSync(8);
+const hash = bcrypt.hashSync(password, salt);
+    let newUserData =   this.userDB.create({
+  name,
+    username,
+    email,
+    password: hash
+    });
+    const user =  await this.userDB.save(newUserData);
+    return user;
   }
 
   findAll() {
-    return this.userRepository.find();
+    return this.userDB.find();
   }
 
   findOne(id: number) {
-    return this.userRepository.findOneBy({ id });
+    return this.userDB.findOneBy({ id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
