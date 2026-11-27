@@ -1,4 +1,7 @@
-import { Column, CreateDateColumn, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { Review } from '../../review/entities/review.entity.js';
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, Entity, ManyToOne, OneToMany } from 'typeorm';
+import type { Relation } from 'typeorm';
+import { User } from '../../user/entities/user.entity.js';
 
 
 @Entity({name: 'products'})
@@ -17,4 +20,8 @@ export class Product {
 
   @CreateDateColumn({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
   createdAt: Date;
+  @ManyToOne(() => User, (user) => user.products)
+  user: Relation<User>;
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Relation<Review[]>;
 }

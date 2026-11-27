@@ -4,19 +4,26 @@ import { UpdateProductDto } from './dto/update-product.dto.js';
 import { Product } from './entities/product.entity.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductService {
   constructor(
+    private configService: ConfigService,
     @InjectRepository(Product)
-    private readonly productDB : Repository<Product>) {}
-  create(createProductDto: CreateProductDto) {
+    private readonly productDB: Repository<Product>
+  ) { }
+ 
+ 
+ 
+    create(createProductDto: CreateProductDto) {
     const product = this.productDB.create(createProductDto);
     this.productDB.save(product)
     return "This action adds a new product";
   }
 
   findAll() {
+    console.log('Database Host:', this.configService.get<string>('DB_DATABASE'));
     return this.productDB.find();
   }
 
